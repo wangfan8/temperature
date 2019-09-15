@@ -13,7 +13,51 @@ Import data:
 
 ```{r}
 library(tidyverse)
+library(fs) # file system
+library(lubridate) # date
 
+data_dir <- "/Users/apple/Dropbox/temperature/data/201908"
 
+csv_files <- fs::dir_ls(data_dir, regexp = "\\.csv$")
+
+data <- csv_files %>% map_dfr(read_csv, .id = "source")
 ```
 
+Data summary:
+
+```{r}
+summary(data)
+```
+
+Filter out August data and seperate rooms:
+```{r}
+aug_data <- data %>%
+  filter(`Timestamp for sample frequency every 1 min` >= "2019-08-01 00:00:00" 
+         & `Timestamp for sample frequency every 1 min` <= "2019-08-31 23:59:59" ) %>%
+  mutate(room = case_when(grepl("1bedroom", source)          ~ "1bedroom", 
+                          grepl("2nd Floor Bedroom", source) ~ "2bedroom",
+                          grepl("2office", source)           ~ "2office",
+                          grepl("kitchen", source)           ~ "kitchen")) %>%
+  select(-source) %>%
+  rename(time = `Timestamp for sample frequency every 1 min`)
+```
+
+Plot temperature for different rooms:
+
+```{r}
+aug_data %>%
+  ggplot(aes(x = time
+             , y = Temperature_Fahrenheit
+             , color = room)) +
+  geom_line()
+```
+
+Plot humidity for different rooms:
+
+```{r}
+aug_data %>%
+  ggplot(aes(x = time
+             , y = Relative_Humidity
+             , color = room)) +
+  geom_line()
+```
