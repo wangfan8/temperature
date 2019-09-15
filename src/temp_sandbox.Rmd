@@ -1,0 +1,19 @@
+---
+title: "temperature_sandbox"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This markdown is used to explore home temperatures in 4 rooms, collected by Govee sensors.
+
+Import data:
+
+```{r}
+library(tidyverse)
+
+
+```
+
