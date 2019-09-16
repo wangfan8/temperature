@@ -15,6 +15,7 @@ Import data:
 library(tidyverse)
 library(fs) # file system
 library(lubridate) # date
+library(tidyr) # long to wide data transformation
 
 data_dir <- "/Users/apple/Dropbox/temperature/data/201908"
 
@@ -61,15 +62,36 @@ aug_data %>%
              , color = room)) +
   geom_line()
 ```
-Statistics by room:
+Basic statistics by room:
 ```{r}
 aug_data %>%
   group_by(room) %>%
   summarise(mean_temp = mean(Temperature_Fahrenheit)
             , max_temp  = max(Temperature_Fahrenheit)
-            , min_temp  = min(Temperature_Fahrenheit) 
+            , min_temp  = min(Temperature_Fahrenheit)
+            , sd_temp   = sd(Temperature_Fahrenheit)
             , mean_humidity = mean(Relative_Humidity)
             , max_humidity  = max(Relative_Humidity)
-            , min_humidity  = min(Relative_Humidity))
+            , min_humidity  = min(Relative_Humidity)
+            , sd_humidity   = sd(Relative_Humidity))
+```
+
+Change data from long to wide form:
+
+```{r}
+aug_data %>%
+  pivot_wider(id_cols = time
+              , names_from = room
+              , values_from = c(Temperature_Fahrenheit, Relative_Humidity)) -> aug_data
+```
+
+
+Correlation between temperature and humidity:
+
+```{r}
+cor.test(aug_data[, 2, drop = TRUE], aug_data[, 6, drop = TRUE])$estimate
+cor.test(aug_data[, 3, drop = TRUE], aug_data[, 7, drop = TRUE])$estimate
+cor.test(aug_data[, 4, drop = TRUE], aug_data[, 8, drop = TRUE])$estimate
+cor.test(aug_data[, 5, drop = TRUE], aug_data[, 9, drop = TRUE])$estimate
 ```
 
