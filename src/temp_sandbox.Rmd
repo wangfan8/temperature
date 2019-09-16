@@ -61,3 +61,15 @@ aug_data %>%
              , color = room)) +
   geom_line()
 ```
+Statistics by room:
+```{r}
+aug_data %>%
+  group_by(room) %>%
+  summarise(mean_temp = mean(Temperature_Fahrenheit)
+            , max_temp  = max(Temperature_Fahrenheit)
+            , min_temp  = min(Temperature_Fahrenheit) 
+            , mean_humidity = mean(Relative_Humidity)
+            , max_humidity  = max(Relative_Humidity)
+            , min_humidity  = min(Relative_Humidity))
+```
+
