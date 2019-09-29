@@ -16,6 +16,8 @@ library(tidyverse)
 library(fs) # file system
 library(lubridate) # date
 library(tidyr) # long to wide data transformation
+library(prophet) # fb's forecast package
+library(forecast) # time series forecast
 
 data_dir <- "/Users/apple/Dropbox/temperature/data/201908"
 
@@ -94,4 +96,25 @@ cor.test(aug_data[, 3, drop = TRUE], aug_data[, 7, drop = TRUE])$estimate
 cor.test(aug_data[, 4, drop = TRUE], aug_data[, 8, drop = TRUE])$estimate
 cor.test(aug_data[, 5, drop = TRUE], aug_data[, 9, drop = TRUE])$estimate
 ```
+
+Interestingly, the correlation coef is different across rooms.
+
+Correlation qmong temperatures in different rooms:
+
+```{r}
+cor.test(aug_data[, 2, drop = TRUE], aug_data[, 3, drop = TRUE])$estimate # 1b with 2b
+cor.test(aug_data[, 2, drop = TRUE], aug_data[, 4, drop = TRUE])$estimate # 1b with 2o
+cor.test(aug_data[, 2, drop = TRUE], aug_data[, 5, drop = TRUE])$estimate # 1b with k
+cor.test(aug_data[, 3, drop = TRUE], aug_data[, 4, drop = TRUE])$estimate # 2b with 2o
+cor.test(aug_data[, 3, drop = TRUE], aug_data[, 5, drop = TRUE])$estimate # 2b with k
+cor.test(aug_data[, 4, drop = TRUE], aug_data[, 5, drop = TRUE])$estimate # 2o with k
+```
+
+
+Sort data with date:
+
+```{r}
+aug_data <- arrange(aug_data, time)
+```
+
 
